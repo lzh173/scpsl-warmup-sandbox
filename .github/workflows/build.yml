@@ -48,7 +48,7 @@ jobs:
       - name: Download SCP:SL Dedicated Server
         if: steps.cache-scpsl.outputs.cache-hit != 'true'
         run: |
-          .\steamcmd\steamcmd.exe +login anonymous +force_install_dir .\scpsl_server +app_update 996560 validate +quit
+          .\steamcmd\steamcmd.exe +force_install_dir .\scpsl_server +login anonymous +app_update 996560 validate +quit
         shell: cmd
 
       - name: Restore NuGet packages
