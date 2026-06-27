@@ -29,7 +29,7 @@ safezone_exit_spawn_protection_duration_ms: 10000
 broadcast_warmup_status: true
 broadcast_help_reminder: true
 broadcast_community_reminder: true
-community_reminder_text: '<size=28><color=#00ffff><b>QQ群：897907125</b></color></size>'
+community_reminder_text: ''
 help_reminder_interval_seconds: 45
 help_reminder_duration_seconds: 6
 language: cn

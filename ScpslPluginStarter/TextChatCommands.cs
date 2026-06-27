@@ -12,7 +12,7 @@ public sealed class PublicChatCommand : ICommand
 
     public string[] Aliases => new[] { "pc" };
 
-    public string Description => "Sends a public text chat message.";
+    public string Description => WarmupLocalization.T("Sends a public text chat message.", "发送公共聊天消息。");
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
@@ -28,7 +28,7 @@ public sealed class ProximityChatCommand : ICommand
 
     public string[] Aliases => new[] { "c" };
 
-    public string Description => "Sends a nearby text chat message.";
+    public string Description => WarmupLocalization.T("Sends a nearby text chat message.", "发送附近聊天消息。");
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
@@ -44,7 +44,7 @@ public sealed class RadioChatCommand : ICommand
 
     public string[] Aliases => new[] { "rc" };
 
-    public string Description => "Sends a radio text chat message.";
+    public string Description => WarmupLocalization.T("Sends a radio text chat message.", "发送无线电聊天消息。");
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {
@@ -60,7 +60,7 @@ public sealed class TeamChatCommand : ICommand
 
     public string[] Aliases => new[] { "tc" };
 
-    public string Description => "Sends a team text chat message.";
+    public string Description => WarmupLocalization.T("Sends a team text chat message.", "发送队伍聊天消息。");
 
     public bool Execute(ArraySegment<string> arguments, ICommandSender sender, out string response)
     {

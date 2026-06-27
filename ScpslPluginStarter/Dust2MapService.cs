@@ -38,14 +38,16 @@ internal sealed class Dust2MapService
 
         if (!config.Enabled && !forceLoad)
         {
-            response = "Dust2 map is disabled.";
+            response = WarmupLocalization.T("Dust2 map is disabled.", "Dust2 地图已禁用。");
             return true;
         }
 
         string schematicPath = GetInstalledSchematicPath(config.SchematicName);
         if (!Directory.Exists(schematicPath))
         {
-            response = $"Schematic '{config.SchematicName}' was not found at '{schematicPath}'. Build the plugin to deploy the copied Dust2 files or install them into ProjectMER's Schematics folder.";
+            response = WarmupLocalization.T(
+                $"Schematic '{config.SchematicName}' was not found at '{schematicPath}'. Build the plugin to deploy the copied Dust2 files or install them into ProjectMER's Schematics folder.",
+                $"未在 '{schematicPath}' 找到蓝图 '{config.SchematicName}'。请构建插件以部署 Dust2 文件，或将其安装到 ProjectMER 的 Schematics 目录中。");
             return false;
         }
 
@@ -70,8 +72,8 @@ internal sealed class Dust2MapService
         }
 
         response = forceLoad && !config.Enabled
-            ? $"Loaded '{config.SchematicName}' with {_markers.Count} named marker groups for bomb mode override."
-            : $"Loaded '{config.SchematicName}' with {_markers.Count} named marker groups.";
+            ? WarmupLocalization.T($"Loaded '{config.SchematicName}' with {_markers.Count} named marker groups for bomb mode override.", $"已加载 '{config.SchematicName}'，包含 {_markers.Count} 个命名标记组（用于炸弹模式覆盖）。")
+            : WarmupLocalization.T($"Loaded '{config.SchematicName}' with {_markers.Count} named marker groups.", $"已加载 '{config.SchematicName}'，包含 {_markers.Count} 个命名标记组。");
         return true;
     }
 
@@ -95,13 +97,13 @@ internal sealed class Dust2MapService
 
         if (!config.RuntimeNavMeshEnabled)
         {
-            response = "Runtime NavMesh is disabled.";
+            response = WarmupLocalization.T("Runtime NavMesh is disabled.", "运行时 NavMesh 已禁用。");
             return false;
         }
 
         if (_loadedMap?.Root == null)
         {
-            response = "Runtime NavMesh bake skipped because the schematic is not loaded.";
+            response = WarmupLocalization.T("Runtime NavMesh bake skipped because the schematic is not loaded.", "跳过运行时 NavMesh 烘焙，因为蓝图未加载。");
             return false;
         }
 
@@ -120,8 +122,8 @@ internal sealed class Dust2MapService
         if (sources.Count == 0)
         {
             response = config.RuntimeNavMeshUseRenderMeshes
-                ? "Runtime NavMesh bake found no render-mesh sources."
-                : "Runtime NavMesh bake found no physics-collider sources.";
+                ? WarmupLocalization.T("Runtime NavMesh bake found no render-mesh sources.", "运行时 NavMesh 烘焙未找到渲染网格源。")
+                : WarmupLocalization.T("Runtime NavMesh bake found no physics-collider sources.", "运行时 NavMesh 烘焙未找到物理碰撞体源。");
             return false;
         }
 
@@ -140,13 +142,15 @@ internal sealed class Dust2MapService
         }
         catch (Exception ex)
         {
-            response = $"Runtime NavMesh bake failed: {ex.GetBaseException().Message}";
+            response = WarmupLocalization.T(
+                $"Runtime NavMesh bake failed: {ex.GetBaseException().Message}",
+                $"运行时 NavMesh 烘焙失败：{ex.GetBaseException().Message}");
             return false;
         }
 
         if (data == null)
         {
-            response = "Runtime NavMesh bake returned no NavMeshData.";
+            response = WarmupLocalization.T("Runtime NavMesh bake returned no NavMeshData.", "运行时 NavMesh 烘焙未返回 NavMeshData。");
             return false;
         }
 
@@ -155,8 +159,8 @@ internal sealed class Dust2MapService
         _runtimeNavMeshBounds = bounds;
         string sourceKind = config.RuntimeNavMeshUseRenderMeshes ? "render-mesh" : "physics-collider";
         response = _hasRuntimeNavMesh
-            ? $"Runtime NavMesh baked with {sources.Count} {sourceKind} sources across bounds center=({bounds.center.x:F1},{bounds.center.y:F1},{bounds.center.z:F1}) size=({bounds.size.x:F1},{bounds.size.y:F1},{bounds.size.z:F1})."
-            : "Runtime NavMesh bake completed but the NavMeshData instance was not valid.";
+            ? WarmupLocalization.T($"Runtime NavMesh baked with {sources.Count} {sourceKind} sources across bounds center=({bounds.center.x:F1},{bounds.center.y:F1},{bounds.center.z:F1}) size=({bounds.size.x:F1},{bounds.size.y:F1},{bounds.size.z:F1}).", $"运行时 NavMesh 已烘焙，包含 {sources.Count} 个 {sourceKind} 源，边界 center=({bounds.center.x:F1},{bounds.center.y:F1},{bounds.center.z:F1}) size=({bounds.size.x:F1},{bounds.size.y:F1},{bounds.size.z:F1})。")
+            : WarmupLocalization.T("Runtime NavMesh bake completed but the NavMeshData instance was not valid.", "运行时 NavMesh 烘焙已完成，但 NavMeshData 实例无效。");
         return _hasRuntimeNavMesh;
     }
 
@@ -514,7 +518,9 @@ internal sealed class Dust2MapService
         Type? objectSpawnerType = Type.GetType("ProjectMER.Features.ObjectSpawner, ProjectMER");
         if (objectSpawnerType == null)
         {
-            response = "ProjectMER is not installed or has not been loaded yet. Dust2 can be enabled after ProjectMER is available.";
+            response = WarmupLocalization.T(
+                "ProjectMER is not installed or has not been loaded yet. Dust2 can be enabled after ProjectMER is available.",
+                "ProjectMER 未安装或尚未加载。Dust2 可在安装 ProjectMER 后启用。");
             return false;
         }
 
@@ -538,7 +544,9 @@ internal sealed class Dust2MapService
 
         if (trySpawnMethod == null)
         {
-            response = "ProjectMER was found, but its schematic spawn API could not be located.";
+            response = WarmupLocalization.T(
+                "ProjectMER was found, but its schematic spawn API could not be located.",
+                "已找到 ProjectMER，但无法定位其蓝图生成 API。");
             return false;
         }
 
@@ -550,13 +558,17 @@ internal sealed class Dust2MapService
         }
         catch (Exception ex)
         {
-            response = $"ProjectMER threw while loading '{schematicName}': {ex.GetBaseException().Message}";
+            response = WarmupLocalization.T(
+                $"ProjectMER threw while loading '{schematicName}': {ex.GetBaseException().Message}",
+                $"ProjectMER 在加载 '{schematicName}' 时出错：{ex.GetBaseException().Message}");
             return false;
         }
 
         if (!spawned || arguments[4] == null)
         {
-            response = $"ProjectMER could not spawn schematic '{schematicName}'.";
+            response = WarmupLocalization.T(
+                $"ProjectMER could not spawn schematic '{schematicName}'.",
+                $"ProjectMER 无法生成蓝图 '{schematicName}'。");
             return false;
         }
 
@@ -564,12 +576,14 @@ internal sealed class Dust2MapService
         try
         {
             loadedMap = BuildLoadedMap(schematicName, schematicObject);
-            response = $"Loaded '{schematicName}'.";
+            response = WarmupLocalization.T($"Loaded '{schematicName}'.", $"已加载 '{schematicName}'。");
             return true;
         }
         catch (Exception ex)
         {
-            response = $"Schematic '{schematicName}' spawned, but its contents could not be inspected: {ex.GetBaseException().Message}";
+            response = WarmupLocalization.T(
+                $"Schematic '{schematicName}' spawned, but its contents could not be inspected: {ex.GetBaseException().Message}",
+                $"蓝图 '{schematicName}' 已生成，但无法检查其内容：{ex.GetBaseException().Message}");
             return false;
         }
     }

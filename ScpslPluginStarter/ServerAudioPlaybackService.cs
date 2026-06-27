@@ -330,14 +330,14 @@ internal static class ServerAudioPlaybackService
             using BinaryReader reader = new(stream);
             if (new string(reader.ReadChars(4)) != "RIFF")
             {
-                response = "Only RIFF/WAVE .wav files are supported.";
+                response = WarmupLocalization.T("Only RIFF/WAVE .wav files are supported.", "仅支持 RIFF/WAVE 格式的 .wav 文件。");
                 return false;
             }
 
             reader.ReadInt32();
             if (new string(reader.ReadChars(4)) != "WAVE")
             {
-                response = "Only RIFF/WAVE .wav files are supported.";
+                response = WarmupLocalization.T("Only RIFF/WAVE .wav files are supported.", "仅支持 RIFF/WAVE 格式的 .wav 文件。");
                 return false;
             }
 
@@ -372,14 +372,16 @@ internal static class ServerAudioPlaybackService
 
             if (audioFormat != 1 || bitsPerSample != 16 || channels == 0 || sampleRate <= 0 || data == null)
             {
-                response = "Only 16-bit PCM .wav files are supported.";
+                response = WarmupLocalization.T("Only 16-bit PCM .wav files are supported.", "仅支持 16 位 PCM 格式的 .wav 文件。");
                 return false;
             }
 
             float durationSeconds = data.Length / (float)(channels * sizeof(short) * sampleRate);
             if (maxDurationSeconds > 0 && durationSeconds > maxDurationSeconds)
             {
-                response = $"Audio is {durationSeconds:0.0}s, above the configured max of {maxDurationSeconds}s.";
+                response = WarmupLocalization.T(
+                    $"Audio is {durationSeconds:0.0}s, above the configured max of {maxDurationSeconds}s.",
+                    $"音频长度为 {durationSeconds:0.0} 秒，超过配置的最大值 {maxDurationSeconds} 秒。");
                 return false;
             }
 

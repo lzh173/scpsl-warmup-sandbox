@@ -69,7 +69,7 @@ public sealed class PluginConfig
 
     public bool BroadcastCommunityReminder { get; set; } = true;
 
-    public string CommunityReminderText { get; set; } = "<size=28><color=#00ffff><b>QQ群：897907125</b></color></size>";
+    public string CommunityReminderText { get; set; } = "";
 
     public int HelpReminderIntervalSeconds { get; set; } = 45;
 

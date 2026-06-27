@@ -52,7 +52,7 @@ internal sealed class FacilityNavMeshService
 
         if (!behavior.FacilityRuntimeNavMeshEnabled)
         {
-            response = "Facility runtime NavMesh is disabled.";
+            response = WarmupLocalization.T("Facility runtime NavMesh is disabled.", "设施运行时 NavMesh 已禁用。");
             return false;
         }
 
@@ -72,7 +72,7 @@ internal sealed class FacilityNavMeshService
 
         if (!behavior.FacilitySurfaceRuntimeNavMeshEnabled)
         {
-            response = "Surface runtime NavMesh is disabled.";
+            response = WarmupLocalization.T("Surface runtime NavMesh is disabled.", "地表运行时 NavMesh 已禁用。");
             return false;
         }
 
@@ -81,7 +81,7 @@ internal sealed class FacilityNavMeshService
             out Bounds bounds,
             out List<Vector3> anchors))
         {
-            response = "Surface runtime NavMesh bake found no surface room or door anchors.";
+            response = WarmupLocalization.T("Surface runtime NavMesh bake found no surface room or door anchors.", "地表运行时 NavMesh 烘焙未找到地表房间或门锚点。");
             return false;
         }
 
@@ -158,13 +158,17 @@ internal sealed class FacilityNavMeshService
         }
         catch (Exception ex)
         {
-            response = $"{label} bake failed: {ex.GetBaseException().Message}";
+            response = WarmupLocalization.T(
+                $"{label} bake failed: {ex.GetBaseException().Message}",
+                $"{label} 烘焙失败：{ex.GetBaseException().Message}");
             return false;
         }
 
         if (data == null)
         {
-            response = $"{label} bake returned no NavMeshData.";
+            response = WarmupLocalization.T(
+                $"{label} bake returned no NavMeshData.",
+                $"{label} 烘焙未返回 NavMeshData。");
             return false;
         }
 

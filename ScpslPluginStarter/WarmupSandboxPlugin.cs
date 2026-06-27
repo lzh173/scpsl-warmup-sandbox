@@ -5706,12 +5706,12 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
     {
         if (Round.IsRoundStarted)
         {
-            response = "Round is already started.";
+            response = WarmupLocalization.T("Round is already started.", "回合已开始。");
             return true;
         }
 
         Round.Start();
-        response = "Round start requested.";
+        response = WarmupLocalization.T("Round start requested.", "已请求开始回合。");
         return true;
     }
 
@@ -5760,33 +5760,37 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
     {
         if (!Config.WarmupEnabled)
         {
-            response = "Warmup is disabled. Use 'bots enable' before starting warmup again.";
+            response = WarmupLocalization.T(
+                "Warmup is disabled. Use 'bots enable' before starting warmup again.",
+                "热身模式已关闭。请先使用 'bots enable' 再启动热身。");
             return false;
         }
 
         if (ensureRoundStarted && !Round.IsRoundStarted)
         {
             Round.Start();
-            response = "Round start requested. Warmup will begin when the round starts.";
+            response = WarmupLocalization.T(
+                "Round start requested. Warmup will begin when the round starts.",
+                "已请求开始回合。热身将在回合开始时启动。");
             return true;
         }
 
         RestartWarmup("remote admin");
-        response = "Warmup restart requested.";
+        response = WarmupLocalization.T("Warmup restart requested.", "已请求重启热身。");
         return true;
     }
 
     public bool RestartRound(out string response)
     {
         Round.RestartSilently();
-        response = "Silent round restart requested.";
+        response = WarmupLocalization.T("Silent round restart requested.", "已请求静默重启回合。");
         return true;
     }
 
     public bool StopWarmup(out string response)
     {
         StopWarmupRuntime(clearPlayerPanel: false);
-        response = "Warmup stopped and all managed bots were removed.";
+        response = WarmupLocalization.T("Warmup stopped and all managed bots were removed.", "热身已停止，所有托管机器人已被移除。");
         return true;
     }
 
@@ -5795,8 +5799,8 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
         if (Config.WarmupEnabled == enabled)
         {
             response = enabled
-                ? "Warmup is already enabled."
-                : "Warmup is already disabled.";
+                ? WarmupLocalization.T("Warmup is already enabled.", "热身模式已启用。")
+                : WarmupLocalization.T("Warmup is already disabled.", "热身模式已关闭。");
             return true;
         }
 
@@ -5807,7 +5811,9 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
             StopWarmupRuntime(clearPlayerPanel: true);
             TryRestoreVanillaHazardState();
             SaveConfig();
-            response = "Warmup disabled. Managed bots, arena runtime, round lock, hazard locks, and player panel are now off for vanilla gameplay.";
+            response = WarmupLocalization.T(
+                "Warmup disabled. Managed bots, arena runtime, round lock, hazard locks, and player panel are now off for vanilla gameplay.",
+                "热身模式已关闭。托管机器人、竞技场运行时、回合锁定、灾难锁定和玩家控制台已恢复原版游戏。");
             ApiLogger.Info($"[{Name}] {response}");
             return true;
         }
@@ -5821,7 +5827,9 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
         EnsureEscapeSafezoneVisuals();
         ApplyHazardDisableConfig();
         SaveConfig();
-        response = "Warmup enabled. Use 'bots restart' to start the sandbox if it is not already active.";
+        response = WarmupLocalization.T(
+            "Warmup enabled. Use 'bots restart' to start the sandbox if it is not already active.",
+            "热身模式已启用。如果沙盒尚未启动，请使用 'bots restart' 命令启动。");
         ApiLogger.Info($"[{Name}] {response}");
         return true;
     }
@@ -5854,7 +5862,7 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
     public bool SaveCurrentConfig(out string response)
     {
         SaveConfig();
-        response = "Warmup config saved.";
+        response = WarmupLocalization.T("Warmup config saved.", "热身配置已保存。");
         return true;
     }
 
@@ -5872,7 +5880,9 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
         }
         catch (Exception exception)
         {
-            response = $"Failed to reload Warmup config: {exception.Message}";
+            response = WarmupLocalization.T(
+                $"Failed to reload Warmup config: {exception.Message}",
+                $"重新加载热身配置失败：{exception.Message}");
             ApiLogger.Warn($"[{Name}] {response}");
             return false;
         }
@@ -5892,7 +5902,9 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
 
         RefreshPlayerPanelSettings(sendToPlayers: !string.Equals(previousLanguage, Config.Language, StringComparison.OrdinalIgnoreCase));
 
-        response = $"Warmup config reloaded. bots {previousBotCount}->{Config.BotCount}, maxBots {previousMaxBotCount}->{Config.MaxBotCount}, language {previousLanguage}->{Config.Language}, difficulty {previousDifficulty}->{Config.DifficultyPreset}, aimode {previousAiMode}->{Config.BotBehavior.AiMode}.";
+        response = WarmupLocalization.T(
+            $"Warmup config reloaded. bots {previousBotCount}->{Config.BotCount}, maxBots {previousMaxBotCount}->{Config.MaxBotCount}, language {previousLanguage}->{Config.Language}, difficulty {previousDifficulty}->{Config.DifficultyPreset}, aimode {previousAiMode}->{Config.BotBehavior.AiMode}.",
+            $"热身配置已重新加载。机器人数量 {previousBotCount}->{Config.BotCount}，最大 {previousMaxBotCount}->{Config.MaxBotCount}，语言 {previousLanguage}->{Config.Language}，难度 {previousDifficulty}->{Config.DifficultyPreset}，AI 模式 {previousAiMode}->{Config.BotBehavior.AiMode}。");
         ApiLogger.Info($"[{Name}] {response}");
         return true;
     }
@@ -5921,7 +5933,9 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
             sent++;
         }
 
-        response = $"Live update restart warning sent to {sent} player(s).";
+        response = WarmupLocalization.T(
+            $"Live update restart warning sent to {sent} player(s).",
+            $"热更新重启警告已发送给 {sent} 名玩家。");
         ApiLogger.Info($"[{Name}] {response} seconds={duration} message={finalMessage}");
         return true;
     }
@@ -7351,7 +7365,7 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
     {
         if (string.IsNullOrWhiteSpace(key))
         {
-            response = "Missing setting name.";
+            response = WarmupLocalization.T("Missing setting name.", "缺少设置项名称。");
             return false;
         }
 
@@ -7362,7 +7376,9 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
             case "warmup":
                 if (!bool.TryParse(value, out bool warmupEnabled))
                 {
-                    response = "enabled must be true or false.";
+                    response = WarmupLocalization.T(
+                        "enabled must be true or false.",
+                        "enabled 必须为 true 或 false。");
                     return false;
                 }
 
@@ -7373,34 +7389,44 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
             case "players":
                 if (!int.TryParse(value, out int botCount) || botCount < 0)
                 {
-                    response = "Bot count must be a non-negative integer.";
+                    response = WarmupLocalization.T(
+                        "Bot count must be a non-negative integer.",
+                        "机器人数量必须是非负整数。");
                     return false;
                 }
 
                 if (botCount > Config.MaxBotCount)
                 {
-                    response = $"Bot count cannot exceed {Config.MaxBotCount}.";
+                    response = WarmupLocalization.T(
+                        $"Bot count cannot exceed {Config.MaxBotCount}.",
+                        $"机器人数量不能超过 {Config.MaxBotCount}。");
                     return false;
                 }
 
                 Config.BotCount = botCount;
                 EnsureBotPopulation(_warmupGeneration);
                 TrimExcessBots();
-                response = $"Bot count set to {Config.BotCount}.";
+                response = WarmupLocalization.T(
+                    $"Bot count set to {Config.BotCount}.",
+                    $"机器人数量已设置为 {Config.BotCount}。");
                 return true;
 
             case "maxbots":
             case "maxbotcount":
                 if (!int.TryParse(value, out int maxBotCount) || maxBotCount < 0)
                 {
-                    response = "Max bot count must be a non-negative integer.";
+                    response = WarmupLocalization.T(
+                        "Max bot count must be a non-negative integer.",
+                        "最大机器人数量必须是非负整数。");
                     return false;
                 }
 
                 Config.MaxBotCount = maxBotCount;
                 ClampConfiguredBotCount();
                 TrimExcessBots();
-                response = $"Max bot count set to {Config.MaxBotCount}. Current bot count is {Config.BotCount}.";
+                response = WarmupLocalization.T(
+                    $"Max bot count set to {Config.MaxBotCount}. Current bot count is {Config.BotCount}.",
+                    $"最大机器人数量已设置为 {Config.MaxBotCount}。当前机器人数量为 {Config.BotCount}。");
                 return true;
 
             case "maxplayerbots":
@@ -7409,14 +7435,18 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
             case "playermaxbotcount":
                 if (!int.TryParse(value, out int maxPlayerBotCount) || maxPlayerBotCount < 0)
                 {
-                    response = "Max player bot count must be a non-negative integer.";
+                    response = WarmupLocalization.T(
+                        "Max player bot count must be a non-negative integer.",
+                        "玩家最大机器人数量必须是非负整数。");
                     return false;
                 }
 
                 Config.MaxPlayerBotCount = maxPlayerBotCount;
                 ClampSelectedPlayerPanelBotCounts();
                 RefreshPlayerPanelSettings(sendToPlayers: false);
-                response = $"Max player bot count set to {GetPlayerBotCountLimit()} (configured {Config.MaxPlayerBotCount}, admin max {Config.MaxBotCount}).";
+                response = WarmupLocalization.T(
+                    $"Max player bot count set to {GetPlayerBotCountLimit()} (configured {Config.MaxPlayerBotCount}, admin max {Config.MaxBotCount}).",
+                    $"玩家最大机器人数量已设置为 {GetPlayerBotCountLimit()}（配置 {Config.MaxPlayerBotCount}，管理员上限 {Config.MaxBotCount}）。");
                 return true;
 
             case "humanrespawn":
@@ -7424,24 +7454,32 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
             case "humanrespawnms":
                 if (!int.TryParse(value, out int humanRespawnMs) || humanRespawnMs < 0)
                 {
-                    response = "Human respawn must be a non-negative integer in milliseconds.";
+                    response = WarmupLocalization.T(
+                        "Human respawn must be a non-negative integer in milliseconds.",
+                        "人类重生时间必须是非负整数（毫秒）。");
                     return false;
                 }
 
                 Config.HumanRespawnDelayMs = humanRespawnMs;
-                response = $"Human respawn delay set to {Config.HumanRespawnDelayMs} ms.";
+                response = WarmupLocalization.T(
+                    $"Human respawn delay set to {Config.HumanRespawnDelayMs} ms.",
+                    $"人类重生延迟已设置为 {Config.HumanRespawnDelayMs} 毫秒。");
                 return true;
 
             case "botrespawn":
             case "botrespawnms":
                 if (!int.TryParse(value, out int botRespawnMs) || botRespawnMs < 0)
                 {
-                    response = "Bot respawn must be a non-negative integer in milliseconds.";
+                    response = WarmupLocalization.T(
+                        "Bot respawn must be a non-negative integer in milliseconds.",
+                        "机器人重生时间必须是非负整数（毫秒）。");
                     return false;
                 }
 
                 Config.BotRespawnDelayMs = botRespawnMs;
-                response = $"Bot respawn delay set to {Config.BotRespawnDelayMs} ms.";
+                response = WarmupLocalization.T(
+                    $"Bot respawn delay set to {Config.BotRespawnDelayMs} ms.",
+                    $"机器人重生延迟已设置为 {Config.BotRespawnDelayMs} 毫秒。");
                 return true;
 
             case "speed":
@@ -7468,48 +7506,66 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
             case "humanrole":
                 if (!Enum.TryParse(value, true, out RoleTypeId humanRole))
                 {
-                    response = $"Unknown human role '{value}'.";
+                    response = WarmupLocalization.T(
+                        $"Unknown human role '{value}'.",
+                        $"未知人类阵营 '{value}'。");
                     return false;
                 }
 
                 Config.HumanRole = humanRole;
-                response = $"Human role set to {Config.HumanRole}.";
+                response = WarmupLocalization.T(
+                    $"Human role set to {Config.HumanRole}.",
+                    $"人类阵营已设置为 {Config.HumanRole}。");
                 return true;
 
             case "botrole":
                 if (!Enum.TryParse(value, true, out RoleTypeId botRole))
                 {
-                    response = $"Unknown bot role '{value}'.";
+                    response = WarmupLocalization.T(
+                        $"Unknown bot role '{value}'.",
+                        $"未知机器人阵营 '{value}'。");
                     return false;
                 }
 
                 Config.BotRole = botRole;
                 int recycledBots = RespawnManagedBotsForRoleChange();
                 response = recycledBots > 0
-                    ? $"Bot role set to {Config.BotRole}. Recycled {recycledBots} bot(s) so they respawn with the new role."
-                    : $"Bot role set to {Config.BotRole}.";
+                    ? WarmupLocalization.T(
+                        $"Bot role set to {Config.BotRole}. Recycled {recycledBots} bot(s) so they respawn with the new role.",
+                        $"机器人阵营已设置为 {Config.BotRole}。已回收 {recycledBots} 个机器人以使用新阵营重生。")
+                    : WarmupLocalization.T(
+                        $"Bot role set to {Config.BotRole}.",
+                        $"机器人阵营已设置为 {Config.BotRole}。");
                 return true;
 
             case "forceroundstart":
                 if (!bool.TryParse(value, out bool forceRoundStart))
                 {
-                    response = "forceroundstart must be true or false.";
+                    response = WarmupLocalization.T(
+                        "forceroundstart must be true or false.",
+                        "forceroundstart 必须为 true 或 false。");
                     return false;
                 }
 
                 Config.ForceRoundStartOnFirstPlayer = forceRoundStart;
-                response = $"ForceRoundStartOnFirstPlayer set to {Config.ForceRoundStartOnFirstPlayer}.";
+                response = WarmupLocalization.T(
+                    $"ForceRoundStartOnFirstPlayer set to {Config.ForceRoundStartOnFirstPlayer}.",
+                    $"ForceRoundStartOnFirstPlayer 已设置为 {Config.ForceRoundStartOnFirstPlayer}。");
                 return true;
 
             case "suppressroundend":
                 if (!bool.TryParse(value, out bool suppressRoundEnd))
                 {
-                    response = "suppressroundend must be true or false.";
+                    response = WarmupLocalization.T(
+                        "suppressroundend must be true or false.",
+                        "suppressroundend 必须为 true 或 false。");
                     return false;
                 }
 
                 Config.SuppressRoundEnd = suppressRoundEnd;
-                response = $"SuppressRoundEnd set to {Config.SuppressRoundEnd}.";
+                response = WarmupLocalization.T(
+                    $"SuppressRoundEnd set to {Config.SuppressRoundEnd}.",
+                    $"SuppressRoundEnd 已设置为 {Config.SuppressRoundEnd}。");
                 return true;
 
             case "mode":
@@ -7520,7 +7576,9 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
             case "dust2map":
                 if (!bool.TryParse(value, out bool dust2Enabled))
                 {
-                    response = "map must be true or false.";
+                    response = WarmupLocalization.T(
+                        "map must be true or false.",
+                        "map 必须为 true 或 false。");
                     return false;
                 }
 
@@ -7530,12 +7588,16 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
             case "keepmagazinefilled":
                 if (!bool.TryParse(value, out bool keepMagazineFilled))
                 {
-                    response = "keepmagfilled must be true or false.";
+                    response = WarmupLocalization.T(
+                        "keepmagfilled must be true or false.",
+                        "keepmagfilled 必须为 true 或 false。");
                     return false;
                 }
 
                 Config.BotBehavior.KeepMagazineFilled = keepMagazineFilled;
-                response = $"Bot keep-magazine-filled set to {Config.BotBehavior.KeepMagazineFilled}.";
+                response = WarmupLocalization.T(
+                    $"Bot keep-magazine-filled set to {Config.BotBehavior.KeepMagazineFilled}.",
+                    $"机器人保留弹匣设置已设置为 {Config.BotBehavior.KeepMagazineFilled}。");
                 return true;
 
             case "aimode":
@@ -7553,7 +7615,9 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
                 return SetLanguage(value, out response);
 
             default:
-                response = $"Unknown setting '{key}'.";
+                response = WarmupLocalization.T(
+                    $"Unknown setting '{key}'.",
+                    $"未知设置项 '{key}'。");
                 return false;
         }
     }
@@ -7598,7 +7662,9 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
         }
 
         Config.BotBehavior.FacilityDummyFollowSpeed = speed;
-        response = $"Default facility follow speed set to {speed:F2}.";
+        response = WarmupLocalization.T(
+            $"Default facility follow speed set to {speed:F2}.",
+            $"默认设施跟随速度已设置为 {speed:F2}。");
         return true;
     }
 
@@ -7624,11 +7690,15 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
                 Config.BotBehavior.FacilityDummyFollowSpeedScp106 = speed;
                 break;
             default:
-                response = $"Unsupported SCP speed role: {role}.";
+                response = WarmupLocalization.T(
+                    $"Unsupported SCP speed role: {role}.",
+                    $"不支持的 SCP 速度阵营：{role}。");
                 return false;
         }
 
-        response = $"{role} facility follow speed set to {speed:F2}.";
+        response = WarmupLocalization.T(
+            $"{role} facility follow speed set to {speed:F2}.",
+            $"{role} 设施跟随速度已设置为 {speed:F2}。");
         return true;
     }
 
@@ -7636,7 +7706,9 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
     {
         if (!float.TryParse(rawValue, out speed) || speed <= 0f || speed > 50f)
         {
-            response = "Speed must be a number greater than 0 and no more than 50.";
+            response = WarmupLocalization.T(
+                "Speed must be a number greater than 0 and no more than 50.",
+                "速度必须大于 0 且不超过 50 的数字。");
             return false;
         }
 
@@ -7656,7 +7728,9 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
 
         if (!Enum.TryParse(rawValue, true, out WarmupRoundMode mode))
         {
-            response = "Unknown mode. Use none, standard, or bomb.";
+            response = WarmupLocalization.T(
+                "Unknown mode. Use none, standard, or bomb.",
+                "未知模式。请使用 none、standard 或 bomb。");
             return false;
         }
 
@@ -7694,8 +7768,8 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
         {
             RestartWarmup(enabled ? "dust2 map enabled" : "dust2 map disabled");
             response = enabled
-                ? "Dust2 map enabled. Warmup restart requested."
-                : "Dust2 map disabled. Warmup restart requested.";
+                ? WarmupLocalization.T("Dust2 map enabled. Warmup restart requested.", "Dust2 地图已启用。已请求重启热身。")
+                : WarmupLocalization.T("Dust2 map disabled. Warmup restart requested.", "Dust2 地图已关闭。已请求重启热身。");
             return true;
         }
 
@@ -7705,8 +7779,8 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
         }
 
         response = enabled
-            ? "Dust2 map enabled. It will load on the next warmup start."
-            : "Dust2 map disabled.";
+            ? WarmupLocalization.T("Dust2 map enabled. It will load on the next warmup start.", "Dust2 地图已启用。将在下次热身启动时加载。")
+            : WarmupLocalization.T("Dust2 map disabled.", "Dust2 地图已关闭。");
         return true;
     }
 
@@ -8090,13 +8164,17 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
     {
         if (!Enum.TryParse(rawValue, true, out WarmupAiMode mode))
         {
-            response = $"Unknown AI mode '{rawValue}'. Use classic or realistic.";
+            response = WarmupLocalization.T(
+                $"Unknown AI mode '{rawValue}'. Use classic or realistic.",
+                $"未知 AI 模式 '{rawValue}'。请使用 classic 或 realistic。");
             return false;
         }
 
         Config.BotBehavior.AiMode = mode;
         SaveConfig();
-        response = $"AI mode set to {Config.BotBehavior.AiMode}.";
+        response = WarmupLocalization.T(
+            $"AI mode set to {Config.BotBehavior.AiMode}.",
+            $"AI 模式已设置为 {Config.BotBehavior.AiMode}。");
         return true;
     }
 
@@ -8104,12 +8182,16 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
     {
         if (!Enum.TryParse(rawValue, true, out WarmupDifficulty preset))
         {
-            response = $"Unknown difficulty '{rawValue}'. Use easy, normal, hard, or hardest.";
+            response = WarmupLocalization.T(
+                $"Unknown difficulty '{rawValue}'. Use easy, normal, hard, or hardest.",
+                $"未知难度 '{rawValue}'。请使用 easy、normal、hard 或 hardest。");
             return false;
         }
 
         ApplyDifficultyPreset(preset, persist: true);
-        response = $"Difficulty set to {Config.DifficultyPreset}.";
+        response = WarmupLocalization.T(
+            $"Difficulty set to {Config.DifficultyPreset}.",
+            $"难度已设置为 {Config.DifficultyPreset}。");
         return true;
     }
 

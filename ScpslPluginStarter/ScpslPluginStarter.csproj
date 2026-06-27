@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <ScpslServerManagedDir>C:\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed</ScpslServerManagedDir>
+    <ScpslServerManagedDir>D:\desktop_dp</ScpslServerManagedDir>
     <LabApiPortPluginsDir>$(APPDATA)\SCP Secret Laboratory\LabAPI\plugins\7777</LabApiPortPluginsDir>
     <ProjectMerSchematicsDir>$(APPDATA)\SCP Secret Laboratory\LabAPI\configs\ProjectMER\Schematics</ProjectMerSchematicsDir>
   </PropertyGroup>
@@ -17,6 +17,7 @@
   <ItemGroup>
     <PackageReference Include="Lib.Harmony" Version="2.3.6" />
     <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies.net48" Version="1.0.3" PrivateAssets="All" />
+    <PackageReference Include="Northwood.LabAPI" Version="1.1.7" />
   </ItemGroup>
 
   <ItemGroup>
@@ -43,7 +44,7 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="CommandSystem.Core">
-      <HintPath>$(ScpslServerManagedDir)\CommandSystem.Core.dll</HintPath>
+      <HintPath>ManagedDlls\CommandSystem.Core.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Mirror">
@@ -55,19 +56,19 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(ScpslServerManagedDir)\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>ManagedDlls\UnityEngine.CoreModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
-      <HintPath>$(ScpslServerManagedDir)\UnityEngine.AIModule.dll</HintPath>
+      <HintPath>ManagedDlls\UnityEngine.AIModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>$(ScpslServerManagedDir)\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>ManagedDlls\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>$(ScpslServerManagedDir)\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>ManagedDlls\Unity.TextMeshPro.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>

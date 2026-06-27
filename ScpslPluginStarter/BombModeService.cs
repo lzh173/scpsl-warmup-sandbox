@@ -77,7 +77,9 @@ internal sealed class BombModeService
         ResetRuntime();
         if (!Enabled)
         {
-            response = "Bomb mode is disabled.";
+            response = WarmupLocalization.T(
+                "Bomb mode is disabled.",
+                "炸弹模式已关闭。");
             return false;
         }
 
@@ -95,8 +97,12 @@ internal sealed class BombModeService
 
         State = BombRoundState.Live;
         response = bombCarrier == null
-            ? "Bomb mode round started without an eligible terrorist bomb carrier."
-            : $"Bomb mode round started. Bomb carrier: {bombCarrier.Nickname}.";
+            ? WarmupLocalization.T(
+                "Bomb mode round started without an eligible terrorist bomb carrier.",
+                "炸弹模式回合已开始，但没有合格的恐怖分子炸弹携带者。")
+            : WarmupLocalization.T(
+                $"Bomb mode round started. Bomb carrier: {bombCarrier.Nickname}.",
+                $"炸弹模式回合已开始。炸弹携带者：{bombCarrier.Nickname}。");
         return true;
     }
 
@@ -157,25 +163,25 @@ internal sealed class BombModeService
 
         string task = State switch
         {
-            BombRoundState.Planted when player.IsNTF => "Defuse the bomb.",
-            BombRoundState.Planted => "Protect the planted bomb.",
-            _ when player.IsNTF => "Stop the terrorists or defuse if planted.",
-            _ => "Plant the bomb or eliminate the counter-terrorists.",
+            BombRoundState.Planted when player.IsNTF => WarmupLocalization.T("Defuse the bomb.", "拆除炸弹。"),
+            BombRoundState.Planted => WarmupLocalization.T("Protect the planted bomb.", "保护已安放的炸弹。"),
+            _ when player.IsNTF => WarmupLocalization.T("Stop the terrorists or defuse if planted.", "阻止恐怖分子，如已安放则拆除炸弹。"),
+            _ => WarmupLocalization.T("Plant the bomb or eliminate the counter-terrorists.", "安放炸弹或消灭反恐精英。"),
         };
 
-        return $"<align=right><size=28>Bomb Mode\nCT {ctAlive} | T {tAlive}\n{time}\n{task}</size></align>";
+        return $"<align=right><size=28>{WarmupLocalization.T("Bomb Mode", "炸弹模式")}\nCT {ctAlive} | T {tAlive}\n{time}\n{task}</size></align>";
     }
 
     public string DescribeResult(BombRoundResult result)
     {
         return result switch
         {
-            BombRoundResult.Defused => "Counter-Terrorists win. The bomb was defused.",
-            BombRoundResult.Exploded => "Terrorists win. The bomb exploded.",
-            BombRoundResult.CounterTerroristsWin => "Counter-Terrorists win. All terrorists were eliminated.",
-            BombRoundResult.TerroristsWin => "Terrorists win. All counter-terrorists were eliminated.",
-            BombRoundResult.TimeExpired => "Counter-Terrorists hold. Time expired before the bomb was planted.",
-            BombRoundResult.Draw => "Bomb round ended in a draw.",
+            BombRoundResult.Defused => WarmupLocalization.T("Counter-Terrorists win. The bomb was defused.", "反恐精英获胜。炸弹已被拆除。"),
+            BombRoundResult.Exploded => WarmupLocalization.T("Terrorists win. The bomb exploded.", "恐怖分子获胜。炸弹已爆炸。"),
+            BombRoundResult.CounterTerroristsWin => WarmupLocalization.T("Counter-Terrorists win. All terrorists were eliminated.", "反恐精英获胜。所有恐怖分子已被消灭。"),
+            BombRoundResult.TerroristsWin => WarmupLocalization.T("Terrorists win. All counter-terrorists were eliminated.", "恐怖分子获胜。所有反恐精英已被消灭。"),
+            BombRoundResult.TimeExpired => WarmupLocalization.T("Counter-Terrorists hold. Time expired before the bomb was planted.", "反恐精英获胜。时间已到，炸弹未被安放。"),
+            BombRoundResult.Draw => WarmupLocalization.T("Bomb round ended in a draw.", "炸弹模式回合以平局结束。"),
             _ => string.Empty,
         };
     }
@@ -184,7 +190,7 @@ internal sealed class BombModeService
     {
         foreach (Player player in participants.Where(player => player.IsAlive))
         {
-            player.Kill("The bomb exploded.");
+            player.Kill(WarmupLocalization.T("The bomb exploded.", "炸弹已爆炸。"));
         }
     }
 
@@ -206,7 +212,7 @@ internal sealed class BombModeService
         {
             ev.IsAllowed = false;
             ResetBombCooldowns(ev.UsableItem);
-            ev.Player.SendHint("You must be inside a bomb site to plant.", 3f);
+            ev.Player.SendHint(WarmupLocalization.T("You must be inside a bomb site to plant.", "你必须位于炸弹安放区内才能安放。"), 3f);
             return;
         }
 
@@ -236,7 +242,7 @@ internal sealed class BombModeService
         DetachBombVisualToWorld(ev.Player.Position + BombPlantedOffset);
         ReleaseMovementLock(ev.Player);
         ev.Player.RemoveItem(ItemType.SCP1576, 1);
-        ev.Player.SendHint("Bomb planted.", 3f);
+        ev.Player.SendHint(WarmupLocalization.T("Bomb planted.", "炸弹已安放。"), 3f);
     }
 
     public void OnCancelledUsingItem(PlayerCancelledUsingItemEventArgs ev)
@@ -277,7 +283,7 @@ internal sealed class BombModeService
         SecondsRemaining = 0;
         ReleaseMovementLock(ev.Player);
         HideBombVisual();
-        ev.Player.SendHint("Bomb defused.", 3f);
+        ev.Player.SendHint(WarmupLocalization.T("Bomb defused.", "炸弹已拆除。"), 3f);
     }
 
     public void OnSearchToyAborted(PlayerSearchToyAbortedEventArgs ev)
@@ -312,7 +318,7 @@ internal sealed class BombModeService
 
         BombSerial = ev.Pickup.Serial;
         AttachBombVisualToPlayer(ev.Player);
-        ev.Player.SendHint("You picked up the bomb.", 3f);
+        ev.Player.SendHint(WarmupLocalization.T("You picked up the bomb.", "你捡起了炸弹。"), 3f);
     }
 
     public void OnDroppedItem(PlayerDroppedItemEventArgs ev)
@@ -338,7 +344,7 @@ internal sealed class BombModeService
         if (ev.NewItem is UsableItem newUsable && IsBombUsable(newUsable))
         {
             ResetBombCooldowns(newUsable);
-            ev.Player.SendHint("Bomb equipped.", 3f);
+            ev.Player.SendHint(WarmupLocalization.T("Bomb equipped.", "炸弹已装备。"), 3f);
         }
 
         if (ev.OldItem is UsableItem oldUsable && IsBombUsable(oldUsable))
@@ -360,25 +366,33 @@ internal sealed class BombModeService
     {
         if (!mapService.TryGetAdminToyComponent("Bomb", out AdminToyBase? bombVisual))
         {
-            response = "Dust2 Bomb admin toy could not be found.";
+            response = WarmupLocalization.T(
+                "Dust2 Bomb admin toy could not be found.",
+                "找不到 Dust2 炸弹管理玩具组件。");
             return false;
         }
 
         if (!mapService.TryGetAdminToyComponent("Bomb_Button", out InvisibleInteractableToy? buttonBase))
         {
-            response = "Dust2 Bomb_Button interactable could not be found.";
+            response = WarmupLocalization.T(
+                "Dust2 Bomb_Button interactable could not be found.",
+                "找不到 Dust2 Bomb_Button 交互组件。");
             return false;
         }
 
         if (!mapService.TryGetMarkerTransform("ASiteBounds", out Transform? aSiteTransform))
         {
-            response = "Dust2 ASiteBounds marker could not be found.";
+            response = WarmupLocalization.T(
+                "Dust2 ASiteBounds marker could not be found.",
+                "找不到 Dust2 ASiteBounds 标记。");
             return false;
         }
 
         if (!mapService.TryGetMarkerTransform("BSiteBounds", out Transform? bSiteTransform))
         {
-            response = "Dust2 BSiteBounds marker could not be found.";
+            response = WarmupLocalization.T(
+                "Dust2 BSiteBounds marker could not be found.",
+                "找不到 Dust2 BSiteBounds 标记。");
             return false;
         }
 
@@ -387,7 +401,7 @@ internal sealed class BombModeService
         _defuseButton.IsLocked = true;
         _aSiteBounds = new Bounds(aSiteTransform!.position, aSiteTransform.localScale);
         _bSiteBounds = new Bounds(bSiteTransform!.position, bSiteTransform.localScale);
-        response = "Bomb map objects resolved.";
+        response = WarmupLocalization.T("Bomb map objects resolved.", "炸弹地图对象已解析。");
         return true;
     }
 
@@ -416,7 +430,7 @@ internal sealed class BombModeService
         Item bombItem = bombCarrier.AddItem(ItemType.SCP1576, ItemAddReason.AdminCommand);
         BombSerial = bombItem.Serial;
         AttachBombVisualToPlayer(bombCarrier);
-        bombCarrier.SendHint("You have the bomb. Plant it in site A or B.", 4f);
+        bombCarrier.SendHint(WarmupLocalization.T("You have the bomb. Plant it in site A or B.", "你持有炸弹。请前往 A 区或 B 区安放。"), 4f);
     }
 
     private void RemoveBombItemsFromEveryone()
