@@ -48,8 +48,16 @@ jobs:
       - name: Download SCP:SL Dedicated Server
         if: steps.cache-scpsl.outputs.cache-hit != 'true'
         run: |
-          .\steamcmd\steamcmd.exe +force_install_dir .\scpsl_server +login anonymous +app_update 996560 validate +quit
-        shell: cmd
+          # SteamCMD self-updates on first launch and drops the original command.
+          # Always run a dry +quit first so the real command works.
+          & .\steamcmd\steamcmd.exe +quit 2>$null
+          $retry = 0
+          do {
+            $retry++
+            & .\steamcmd\steamcmd.exe +force_install_dir .\scpsl_server +login anonymous +app_update 996560 validate +quit
+          } while ($LASTEXITCODE -ne 0 -and $retry -le 3)
+          if ($LASTEXITCODE -ne 0) { throw "steamcmd failed after $retry attempts" }
+        shell: pwsh
 
       - name: Restore NuGet packages
         run: dotnet restore ScpslPluginStarter/ScpslPluginStarter.csproj
