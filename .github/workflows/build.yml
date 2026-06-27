@@ -1,0 +1,66 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'ScpslPluginStarter/**'
+      - '.github/workflows/build.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ScpslPluginStarter/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.x
+
+      - name: Cache SteamCMD
+        id: cache-steamcmd
+        uses: actions/cache@v4
+        with:
+          path: steamcmd
+          key: steamcmd
+
+      - name: Install SteamCMD
+        if: steps.cache-steamcmd.outputs.cache-hit != 'true'
+        run: |
+          curl -sLo steamcmd.zip https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip
+          Expand-Archive steamcmd.zip -DestinationPath steamcmd -Force
+        shell: pwsh
+
+      - name: Cache SCP:SL server
+        id: cache-scpsl
+        uses: actions/cache@v4
+        with:
+          path: scpsl_server
+          key: scpsl-server-${{ runner.os }}
+
+      - name: Download SCP:SL Dedicated Server
+        if: steps.cache-scpsl.outputs.cache-hit != 'true'
+        run: |
+          .\steamcmd\steamcmd.exe +login anonymous +force_install_dir .\scpsl_server +app_update 996560 validate +quit
+        shell: cmd
+
+      - name: Restore NuGet packages
+        run: dotnet restore ScpslPluginStarter/ScpslPluginStarter.csproj
+
+      - name: Build
+        run: dotnet build ScpslPluginStarter/ScpslPluginStarter.csproj --configuration Release --no-restore -p:ScpslServerManagedDir="${{ github.workspace }}\scpsl_server\SCPSL_Data\Managed"
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ScpslPluginStarter
+          path: |
+            ScpslPluginStarter/bin/Release/net48/ScpslPluginStarter.dll
+            ScpslPluginStarter/bin/Release/net48/0Harmony.dll

@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <ScpslServerManagedDir>D:\desktop_dp</ScpslServerManagedDir>
+    <ScpslServerManagedDir>C:\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed</ScpslServerManagedDir>
     <LabApiPortPluginsDir>$(APPDATA)\SCP Secret Laboratory\LabAPI\plugins\7777</LabApiPortPluginsDir>
     <ProjectMerSchematicsDir>$(APPDATA)\SCP Secret Laboratory\LabAPI\configs\ProjectMER\Schematics</ProjectMerSchematicsDir>
   </PropertyGroup>
@@ -44,7 +44,7 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="CommandSystem.Core">
-      <HintPath>ManagedDlls\CommandSystem.Core.dll</HintPath>
+      <HintPath>$(ScpslServerManagedDir)\CommandSystem.Core.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Mirror">
@@ -56,19 +56,19 @@
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.CoreModule">
-      <HintPath>ManagedDlls\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath>$(ScpslServerManagedDir)\UnityEngine.CoreModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
-      <HintPath>ManagedDlls\UnityEngine.AIModule.dll</HintPath>
+      <HintPath>$(ScpslServerManagedDir)\UnityEngine.AIModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="UnityEngine.PhysicsModule">
-      <HintPath>ManagedDlls\UnityEngine.PhysicsModule.dll</HintPath>
+      <HintPath>$(ScpslServerManagedDir)\UnityEngine.PhysicsModule.dll</HintPath>
       <Private>false</Private>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>ManagedDlls\Unity.TextMeshPro.dll</HintPath>
+      <HintPath>$(ScpslServerManagedDir)\Unity.TextMeshPro.dll</HintPath>
       <Private>false</Private>
     </Reference>
   </ItemGroup>
