@@ -299,9 +299,16 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
         {
             if (_hasPrimitiveObjectToyPrefab == null)
             {
-                _hasPrimitiveObjectToyPrefab =
-                    NetworkClient.prefabs != null
-                    && NetworkClient.prefabs.Values.Any(p => p != null && p.TryGetComponent(out AdminToys.PrimitiveObjectToy _));
+                try
+                {
+                    _hasPrimitiveObjectToyPrefab =
+                        NetworkClient.prefabs != null
+                        && NetworkClient.prefabs.Values.Any(p => p != null && p.TryGetComponent(out AdminToys.PrimitiveObjectToy _));
+                }
+                catch
+                {
+                    _hasPrimitiveObjectToyPrefab = false;
+                }
             }
             return _hasPrimitiveObjectToyPrefab.Value;
         }
@@ -2111,6 +2118,19 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
     }
 
     private void RunBotBrain(int playerId, int brainToken, int generation)
+    {
+        try
+        {
+            RunBotBrainCore(playerId, brainToken, generation);
+        }
+        catch (Exception ex)
+        {
+            ApiLogger.Error($"[{Name}] [CrashDiag] bot-brain-exception playerId={playerId} error=\"{ex.GetBaseException().Message}\" stack={ex.GetBaseException().StackTrace}");
+            ScheduleBotBrain(playerId, brainToken, generation);
+        }
+    }
+
+    private void RunBotBrainCore(int playerId, int brainToken, int generation)
     {
         if (!IsCurrentGeneration(generation))
         {
