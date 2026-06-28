@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using AdminToys;
 using CommandSystem;
 using LabApi.Events.Arguments.PlayerEvents;
-using LabApi.Features.Wrappers;
 using Mirror;
 using NorthwoodLib;
 using RemoteAdmin;
@@ -115,7 +114,7 @@ internal static class ServerAudioPlaybackService
         }
     }
 
-    public static void StopIfBroadcaster(Player player)
+    public static void StopIfBroadcaster(LabApi.Features.Wrappers.Player player)
     {
         lock (StateLock)
         {
