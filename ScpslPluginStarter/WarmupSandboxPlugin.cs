@@ -301,7 +301,7 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
             {
                 _hasPrimitiveObjectToyPrefab =
                     NetworkClient.prefabs != null
-                    && NetworkClient.prefabs.ContainsKey(typeof(AdminToys.PrimitiveObjectToy));
+                    && NetworkClient.prefabs.Values.Any(p => p != null && p.TryGetComponent(out AdminToys.PrimitiveObjectToy _));
             }
             return _hasPrimitiveObjectToyPrefab.Value;
         }
