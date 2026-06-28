@@ -6,6 +6,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using AdminToys;
 using CommandSystem;
+using LabApi.Events.Arguments.PlayerEvents;
+using LabApi.Features.Wrappers;
 using Mirror;
 using NorthwoodLib;
 using RemoteAdmin;
@@ -98,6 +100,30 @@ internal static class ServerAudioPlaybackService
         Dispatch(DestroySpeaker);
         response = WarmupLocalization.T("Server audio stopped.", "全服音频已停止。");
         return true;
+    }
+
+    public static void OnPlayerSendingVoiceMessage(PluginConfig config, PlayerSendingVoiceMessageEventArgs ev)
+    {
+        if (!config.ServerAudio.Enabled)
+        {
+            return;
+        }
+
+        if (ev.Player.IsNpc || ev.Player.IsDummy)
+        {
+            ev.IsAllowed = false;
+        }
+    }
+
+    public static void StopIfBroadcaster(Player player)
+    {
+        lock (StateLock)
+        {
+            _playbackToken++;
+            IsPlaying = false;
+        }
+
+        Dispatch(DestroySpeaker);
     }
 
     private static async Task RunPlayback(float[] samples, byte controllerId, int token)

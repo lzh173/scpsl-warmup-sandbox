@@ -234,6 +234,10 @@ public sealed class ServerAudioConfig
     public float DefaultVolume { get; set; } = 0.65f;
 
     public byte SpeakerControllerId { get; set; } = 221;
+
+    public string AudioDirectoryName { get; set; } = "Audio";
+
+    public int MaxDurationSeconds { get; set; } = 300;
 }
 
 public sealed class PlaytimeTrackingConfig
