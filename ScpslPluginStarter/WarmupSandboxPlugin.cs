@@ -292,6 +292,20 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
     private string _playerPanelSettingsSignature = string.Empty;
     private string _playerPanelBroadcastSettingsSignature = string.Empty;
     private readonly System.Random _random = new();
+    private static bool? _hasPrimitiveObjectToyPrefab;
+    private static bool HasPrimitiveObjectToyPrefab
+    {
+        get
+        {
+            if (_hasPrimitiveObjectToyPrefab == null)
+            {
+                _hasPrimitiveObjectToyPrefab =
+                    NetworkClient.prefabs != null
+                    && NetworkClient.prefabs.ContainsKey(typeof(AdminToys.PrimitiveObjectToy));
+            }
+            return _hasPrimitiveObjectToyPrefab.Value;
+        }
+    }
     private readonly HumanPresetService _humanPresetService = new();
     private readonly BotCombatService _botCombatService = new();
     private readonly BotControllerService _botControllerService = new();
@@ -5358,6 +5372,11 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
         PrimitiveType type,
         Color color)
     {
+        if (!HasPrimitiveObjectToyPrefab)
+        {
+            return null;
+        }
+
         PrimitiveObjectToyWrapper toy = PrimitiveObjectToyWrapper.Create(
             position,
             rotation,
@@ -5409,6 +5428,11 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
 
     private void EnsureEscapeSafezoneVisuals()
     {
+        if (!HasPrimitiveObjectToyPrefab)
+        {
+            return;
+        }
+
         bool hasWalls = _escapeSafezoneVisuals.Any(toy => toy != null && !toy.IsDestroyed);
         bool hasLabels = _escapeSafezoneLabels.Any(toy => toy != null && !toy.IsDestroyed);
         if (hasWalls && hasLabels)
@@ -5472,6 +5496,11 @@ public sealed class WarmupSandboxPlugin : Plugin<PluginConfig>
 
     private void CreateEscapeSafezoneWall(Vector3 position, Vector3 scale)
     {
+        if (!HasPrimitiveObjectToyPrefab)
+        {
+            return;
+        }
+
         PrimitiveObjectToyWrapper wall = PrimitiveObjectToyWrapper.Create(
             position,
             Quaternion.identity,
