@@ -8,8 +8,6 @@ on:
       - '.github/workflows/build.yml'
   pull_request:
     branches: [main]
-    paths:
-      - 'ScpslPluginStarter/**'
   workflow_dispatch:
 
 jobs:
@@ -24,48 +22,13 @@ jobs:
         with:
           dotnet-version: 8.x
 
-      - name: Cache SteamCMD
-        id: cache-steamcmd
-        uses: actions/cache@v4
-        with:
-          path: steamcmd
-          key: steamcmd
-
-      - name: Install SteamCMD
-        if: steps.cache-steamcmd.outputs.cache-hit != 'true'
-        run: |
-          curl -sLo steamcmd.zip https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip
-          Expand-Archive steamcmd.zip -DestinationPath steamcmd -Force
-        shell: pwsh
-
-      - name: Cache SCP:SL server
-        id: cache-scpsl
-        uses: actions/cache@v4
-        with:
-          path: scpsl_server
-          key: scpsl-server-${{ runner.os }}
-
-      - name: Download SCP:SL Dedicated Server
-        if: steps.cache-scpsl.outputs.cache-hit != 'true'
-        run: |
-          # SteamCMD self-updates on first launch and drops the original command.
-          # Always run a dry +quit first so the real command works.
-          & .\steamcmd\steamcmd.exe +quit 2>$null
-          $retry = 0
-          do {
-            $retry++
-            & .\steamcmd\steamcmd.exe +force_install_dir .\scpsl_server +login anonymous +app_update 996560 validate +quit
-          } while ($LASTEXITCODE -ne 0 -and $retry -le 3)
-          if ($LASTEXITCODE -ne 0) { throw "steamcmd failed after $retry attempts" }
-        shell: pwsh
-
       - name: Restore NuGet packages
         run: dotnet restore ScpslPluginStarter/ScpslPluginStarter.csproj
 
       - name: Build
-        run: dotnet build ScpslPluginStarter/ScpslPluginStarter.csproj --configuration Release --no-restore -p:ScpslServerManagedDir="${{ github.workspace }}\scpsl_server\SCPSL_Data\Managed"
+        run: dotnet build ScpslPluginStarter/ScpslPluginStarter.csproj --configuration Release --no-restore
 
-      - name: Upload build artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ScpslPluginStarter

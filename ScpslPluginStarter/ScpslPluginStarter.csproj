@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <ScpslServerManagedDir>C:\Program Files (x86)\Steam\steamapps\common\SCP Secret Laboratory Dedicated Server\SCPSL_Data\Managed</ScpslServerManagedDir>
+    <ScpslServerManagedDir>ManagedDlls</ScpslServerManagedDir>
     <LabApiPortPluginsDir>$(APPDATA)\SCP Secret Laboratory\LabAPI\plugins\7777</LabApiPortPluginsDir>
     <ProjectMerSchematicsDir>$(APPDATA)\SCP Secret Laboratory\LabAPI\configs\ProjectMER\Schematics</ProjectMerSchematicsDir>
   </PropertyGroup>
